@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuraLend - Micro-Lending on Rootstock</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>NeuraLend</h1>
+      <p>Micro-Lending with AI Credit Scoring on Rootstock</p>
+      <button id="connectWallet" onclick="connectWallet()">Connect Wallet</button>
+      <div id="walletInfo"></div>
+    </header>
+
+    <section id="stats" class="hidden">
+      <h2>Account Stats</h2>
+      <p><strong>Wallet:</strong> <span id="walletAddress"></span></p>
+      <p><strong>tRBTC Balance:</strong> <span id="trbtcBalance">0</span> tRBTC</p>
+      <p><strong>wUSDC Balance:</strong> <span id="wusdcBalance">0</span> wUSDC</p>
+      <p><strong>Collateral:</strong> <span id="collateral">0</span> tRBTC</p>
+      <p><strong>Debt:</strong> <span id="debt">0</span> wUSDC</p>
+      <p><strong>AI Credit Score:</strong> <span id="creditScore">-</span></p>
+      <button onclick="refreshStats()">Refresh Stats</button>
+    </section>
+
+    <section id="actions" class="hidden">
+      <h2>Actions</h2>
+      <div class="action">
+        <h3>Deposit tRBTC</h3>
+        <input id="depositAmount" type="number" step="0.01" placeholder="Amount (tRBTC)">
+        <button onclick="deposit()">Deposit</button>
+      </div>
+      <div class="action">
+        <h3>Borrow wUSDC</h3>
+        <input id="borrowAmount" type="number" step="1" placeholder="Amount (wUSDC)">
+        <button onclick="borrow()">Borrow</button>
+      </div>
+      <div class="action">
+        <h3>Repay wUSDC</h3>
+        <input id="repayAmount" type="number" step="1" placeholder="Amount (wUSDC)">
+        <button onclick="repay()">Repay</button>
+      </div>
+      <div class="action">
+        <h3>Liquidate</h3>
+        <button onclick="liquidate()">Liquidate</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+  <script src="node_modules/axios/dist/axios.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

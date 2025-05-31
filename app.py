@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import requests
 
 app = Flask(__name__)
+CORS(app, resources={r"/credit-score": {"origins": "http://localhost:8080"}})
 
 # Blockscout API base URL for Rootstock testnet
 BLOCKSCOUT_API = "https://rootstock-testnet.blockscout.com/api"
