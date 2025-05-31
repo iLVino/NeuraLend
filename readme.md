@@ -27,17 +27,18 @@ Decentralized micro-lending platform on Rootstock with AI-based credit scoring.
 ## Setup
 
 ### 1. Clone Repository
-```bash
+
+bash
 git clone https://github.com/iLVino/NeuraLend.git
 cd NeuraLend
 
-2. Install Frontend Dependencies
+### 2. Install Frontend Dependencies
 bash
 
 npm install -g http-server
 
 Ensure files: index.html, app.js, styles.css, favicon.png, node_modules/axios/dist/axios.min.js
-3. Set Up Flask Backend
+### 3. Set Up Flask Backend
 Create app.py:
 python
 
@@ -63,7 +64,7 @@ bash
 
 python app.py
 
-4. Configure Rootstock
+### 4. Configure Rootstock
 Add to MetaMask:
 Testnet:
 Name: Rootstock Testnet
@@ -74,7 +75,7 @@ Chain ID: 31
 
 Symbol: tRBTC
 
-5. Run Frontend
+### 5. Run Frontend
 bash
 
 http-server --cors
@@ -133,4 +134,3 @@ Open pull request
 
 License
 MIT License. See LICENSE.
-
