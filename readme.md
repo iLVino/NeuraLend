@@ -100,24 +100,3 @@ Liquidate
 Refresh stats as needed
 
 Project Structure
-
-NeuraLend/
-├── index.html
-├── app.js
-├── styles.css
-├── favicon.png
-├── node_modules/axios/dist/axios.min.js
-└── app.py  # Optional
-
-Troubleshooting
-Button Issues: Check MetaMask, console (F12), app.js load
-
-CORS: Verify http-server --cors and Flask CORS
-
-Contract: Confirm vaultAddress on Rootstock
-
-Backend: Test http://localhost:5001/credit-score with:
-bash
-
-curl -X POST http://localhost:5001/credit-score -H "Content-Type: application/json" -d '{"wallet": "0x..."}'
-
