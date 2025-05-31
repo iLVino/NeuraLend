@@ -67,6 +67,24 @@ const config: HardhatUserConfig = {
             url: process.env.RPC_URL_ARB_SEPOLIA || 'https://arbitrum-sepolia.gateway.tenderly.co',
             accounts,
         },
+        rootstock: {
+      url: "https://public-node.testnet.rsk.co",
+      accounts: [process.env.PRIVATE_KEY || "0x0000000000000000000000000000000000000000000000000000000000000000"],
+      chainId: 31,
+      gasPrice: 60000000, // 0.06 gwei, suitable for Rootstock testnet
+    },
+    flow: {
+      url: "https://testnet.evm.nodes.onflow.org",
+      accounts: [process.env.PRIVATE_KEY || "0x0000000000000000000000000000000000000000000000000000000000000000"],
+      chainId: 545,
+      gasPrice: 1000000000, // 1 gwei, adjust based on Flow EVM testnet
+    },
+    berachain: {
+      url: "https://bepolia.rpc.liveplex.io",
+      accounts: [process.env.PRIVATE_KEY || "0x0000000000000000000000000000000000000000000000000000000000000000"],
+      chainId: 80085,
+      gasPrice: 100000000, // 0.1 gwei, adjust for Berachain Bepolia
+    },
         hardhat: {
             // Need this for testing because TestHelperOz5.sol is exceeding the compiled contract size limit
             allowUnlimitedContractSize: true,

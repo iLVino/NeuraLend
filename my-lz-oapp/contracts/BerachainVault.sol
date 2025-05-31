@@ -15,14 +15,17 @@ contract BerachainVault is Ownable {
     mapping(address => uint256) public collateral; // BERA collateral
     mapping(address => uint256) public borrowed; // $NECT debt
     uint256 public constant COLLATERAL_RATIO = 150; // 150% minimum collateralization
+    address public lspAdapter; // LSPAdapter contract
 
     constructor(
         address _nect,
         address _lsp,
+        address _lspAdapter,
         address _delegate
     ) Ownable(_delegate) {
         nect = IERC20(_nect);
         lsp = ILiquidStabilityPool(_lsp);
+        lspAdapter = _lspAdapter;
     }
 
     // Deposit BERA collateral
@@ -49,7 +52,7 @@ contract BerachainVault is Ownable {
         return collateralValue * 10 / 100;
     }
 
-    // Liquidate undercollateralized position
+    // Liquidate undercollateralized position via LSPAdapter
     function liquidate(address user) external {
         require(collateral[user] > 0, "No collateral");
         uint256 debt = borrowed[user];
@@ -59,8 +62,13 @@ contract BerachainVault is Ownable {
         uint256 collateralToSeize = collateral[user];
         collateral[user] = 0;
         borrowed[user] = 0;
-        lsp.offset(debt, collateralToSeize);
-        payable(owner()).transfer(collateralToSeize);
+
+        // Approve LSPAdapter to handle offset
+        require(nect.approve(lspAdapter, debt), "Approval failed");
+        (bool success, ) = lspAdapter.call{value: collateralToSeize}(
+            abi.encodeWithSignature("offsetDebt(address,uint256,uint256)", user, debt, collateralToSeize)
+        );
+        require(success, "LSP offset failed");
     }
 
     // Repay $NECT

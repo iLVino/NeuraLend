@@ -12,7 +12,7 @@ interface ILiquidStabilityPool {
 contract LSPAdapter is Ownable {
     IERC20 public nect; // $NECT stablecoin
     ILiquidStabilityPool public lsp; // Beraborrow LSP
-    address public lendingProtocol; // NeuraLend’s BerachainVault
+    address public lendingProtocol; // BerachainVault
     uint256 public constant FEE_PERCENT = 50; // 0.5% fee
     uint256 public constant MIN_RESERVE_RATIO = 20; // 20% $NECT reserve
     uint256 public totalNectReserved; // Total $NECT in LSP for NeuraLend
@@ -45,10 +45,9 @@ contract LSPAdapter is Ownable {
         require(totalNectReserved >= debtWithFee, "Insufficient $NECT in LSP");
         require(totalNectReserved - debtWithFee >= (totalNectReserved * MIN_RESERVE_RATIO) / 100, "Reserve ratio too low");
 
-        // Transfer $NECT from LSP to burn debt
-        require(nect.transferFrom(address(lsp), address(this), debtWithFee), "NECT transfer failed");
-        require(nect.transfer(lendingProtocol, debt), "Debt repayment failed");
-        // Fee remains in LSPAdapter for distribution to LSP holders
+        // Transfer $NECT from BerachainVault (approved by liquidate)
+        require(nect.transferFrom(lendingProtocol, address(this), debt), "NECT transfer failed");
+        // Fee remains in LSPAdapter for LSP holders
 
         // Call LSP offset
         lsp.offset(debt, msg.value);
