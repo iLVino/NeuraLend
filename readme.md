@@ -121,16 +121,3 @@ bash
 
 curl -X POST http://localhost:5001/credit-score -H "Content-Type: application/json" -d '{"wallet": "0x..."}'
 
-Contributing
-Fork repo
-
-Create branch: git checkout -b feature/your-feature
-
-Commit: git commit -m "Add feature"
-
-Push: git push origin feature/your-feature
-
-Open pull request
-
-License
-MIT License. See LICENSE.
