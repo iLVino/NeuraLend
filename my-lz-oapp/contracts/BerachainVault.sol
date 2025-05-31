@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// contracts/BerachainVault.sol
 pragma solidity ^0.8.22;
 
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
@@ -9,18 +10,18 @@ interface ILiquidStabilityPool {
 }
 
 contract BerachainVault is Ownable {
-    IERC20 public honey; // $HONEY token
+    IERC20 public nect; // $NECT stablecoin
     ILiquidStabilityPool public lsp; // Beraborrow LSP
     mapping(address => uint256) public collateral; // BERA collateral
-    mapping(address => uint256) public borrowed; // $HONEY debt
+    mapping(address => uint256) public borrowed; // $NECT debt
     uint256 public constant COLLATERAL_RATIO = 150; // 150% minimum collateralization
 
     constructor(
-        address _honey,
+        address _nect,
         address _lsp,
         address _delegate
     ) Ownable(_delegate) {
-        honey = IERC20(_honey);
+        nect = IERC20(_nect);
         lsp = ILiquidStabilityPool(_lsp);
     }
 
@@ -30,14 +31,14 @@ contract BerachainVault is Ownable {
         collateral[msg.sender] += msg.value;
     }
 
-    // Borrow $HONEY based on AI credit score
+    // Borrow $NECT based on AI credit score
     function borrow(uint256 amount, uint256 creditScore) external {
         require(amount > 0, "Invalid amount");
         uint256 borrowLimit = calculateBorrowLimit(creditScore, collateral[msg.sender]);
         require(amount <= borrowLimit, "Exceeds borrow limit");
-        require(honey.balanceOf(address(this)) >= amount, "Insufficient $HONEY");
+        require(nect.balanceOf(address(this)) >= amount, "Insufficient $NECT");
         borrowed[msg.sender] += amount;
-        require(honey.transfer(msg.sender, amount), "Transfer failed");
+        require(nect.transfer(msg.sender, amount), "Transfer failed");
     }
 
     // Calculate borrow limit based on credit score
@@ -62,11 +63,11 @@ contract BerachainVault is Ownable {
         payable(owner()).transfer(collateralToSeize);
     }
 
-    // Repay $HONEY
+    // Repay $NECT
     function repay(uint256 amount) external {
         require(amount > 0, "Invalid amount");
         require(borrowed[msg.sender] >= amount, "Invalid repayment");
-        require(honey.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+        require(nect.transferFrom(msg.sender, address(this), amount), "Transfer failed");
         borrowed[msg.sender] -= amount;
     }
 
