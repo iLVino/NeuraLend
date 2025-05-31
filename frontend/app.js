@@ -12,6 +12,11 @@ const vaultABI = [
 
 let provider, signer, vault, walletAddress;
 
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('app.js loaded');
+  document.getElementById('connectWallet').addEventListener('click', connectWallet);
+});
+
 async function connectWallet() {
   if (window.ethereum) {
     try {
@@ -95,13 +100,34 @@ async function repay() {
   const amount = document.getElementById('repayAmount').value;
   if (!amount || amount <= 0) return alert('Enter a valid amount');
   try {
-    const approveTx = await vault.approve(vaultAddress, ethers.utils.parseUnits(amount, 6));
+    const repayAmount = ethers.utils.parseUnits(amount, 6);
+    
+    // Check debt
+    const debt = await vault.borrowed(walletAddress);
+    if (debt.lt(repayAmount)) {
+      throw new Error(`Repayment amount (${amount} wUSDC) exceeds debt (${ethers.utils.formatUnits(debt, 6)} wUSDC)`);
+    }
+
+    // Check balance
+    const balance = await vault.balanceOf(walletAddress);
+    if (balance.lt(repayAmount)) {
+      throw new Error(`Insufficient wUSDC balance (${ethers.utils.formatUnits(balance, 6)} wUSDC)`);
+    }
+
+    // Approve
+    console.log(`Approving ${amount} wUSDC...`);
+    const approveTx = await vault.approve(vaultAddress, repayAmount, { gasLimit: 100000 });
     await approveTx.wait();
-    const tx = await vault.repay(ethers.utils.parseUnits(amount, 6));
+    console.log('Approval successful');
+
+    // Repay
+    console.log(`Repaying ${amount} wUSDC...`);
+    const tx = await vault.repay(repayAmount, { gasLimit: 300000 });
     await tx.wait();
     alert('Repay successful!');
     await refreshStats();
   } catch (error) {
+    console.error('Repay error:', error);
     alert(`Repay failed: ${error.message}`);
   }
 }
